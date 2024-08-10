@@ -1,12 +1,18 @@
 package com.amazon.ata.dynamodbscanandserialization.icecream;
 
+import com.amazon.ata.dynamodbscanandserialization.icecream.converter.ZonedDateTimeConverter;
 import com.amazon.ata.dynamodbscanandserialization.icecream.dao.ReceiptDao;
 import com.amazon.ata.dynamodbscanandserialization.icecream.model.Receipt;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.ScanResultPage;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 
 /**
@@ -21,6 +27,7 @@ public class IceCreamParlorAdminService {
      */
     @Inject
     public IceCreamParlorAdminService(ReceiptDao receiptDao) {
+
         this.receiptDao = receiptDao;
     }
 
@@ -31,7 +38,7 @@ public class IceCreamParlorAdminService {
      * @return the total amount of sales during the time period
      */
     public BigDecimal getSalesForTimePeriod(final ZonedDateTime fromDate, final ZonedDateTime toDate) {
-        return new BigDecimal(-1);
+        return receiptDao.getSalesBetweenDates(fromDate, toDate);
     }
 
     /**
@@ -45,7 +52,8 @@ public class IceCreamParlorAdminService {
      * @return a list of Receipts of size limit or less than limit if the end of the receipts has been reached
      */
     public List<Receipt> getCustomerReceipts(final int limit, final Receipt exclusiveStartReceipt) {
-        return Collections.emptyList();
+
+        return receiptDao.getReceiptsPaginated(limit, exclusiveStartReceipt);
     }
 
 }
